@@ -1,0 +1,6 @@
+format_version: v1.0
+type: UniqueComponent
+attributes: {id: cryptoauthlib_pkcs11}
+children:
+- type: ElementPosition
+  attributes: {x: '809', y: '31', id: cryptoauthlib_pkcs11}

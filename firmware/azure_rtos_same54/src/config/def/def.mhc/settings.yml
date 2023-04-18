@@ -1,0 +1,14 @@
+configName: def
+folderName: az
+format_version: v1.0
+frameworkPath: D:\
+processor: ATSAME54P20A
+projectName: az
+settings:
+  PackageFilter: azure_rtos;bsp;core;crypto;cryptoauthlib;cryptoauthlib_apps;csp;dev_packs;harmony-services;net;quick_docs;usb
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: ALL
+  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.6.95\atdf\ATSAME54P20A.atdf
