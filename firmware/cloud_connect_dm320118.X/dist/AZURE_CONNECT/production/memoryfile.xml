@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <executable name="dist/AZURE_CONNECT/production/cloud_connect_dm320118.X.production.elf">
+    <memory name="program">
+      <units>bytes</units>
+      <length>262144</length>
+      <used>157019</used>
+      <free>105125</free>
+    </memory>
+    <memory name="data">
+      <units>bytes</units>
+      <length>32768</length>
+      <used>15872</used>
+      <free>16896</free>
+    </memory>
+  </executable>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/Harmony/latest/firmware/src/main.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/tasks.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/driver/winc/wdrv_winc.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/driver/winc/include/wdrv_winc_common.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/system/command/src/sys_command.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/src/azure/core/az_span.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/iot_cli.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/app.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/driver/winc/include/wdrv_winc_bssctx.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/iot_config/cloud_config.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/services/iot/cloud/wifi_service.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/mqtt/mqtt_core/mqtt_core.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/mqtt/mqtt_comm_bsd/mqtt_comm_layer.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/services/iot/cloud/mqtt_packetPopulation/mqtt_iothub_packetPopulate.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/services/iot/cloud/mqtt_packetPopulation/mqtt_packetPopulate.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/services/iot/cloud/bsd_adapter/bsdWINC.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/inc/azure/iot/az_iot_common.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/debug_print.c</file>
+            <file>file:/D:/Harmony/latest/firmware/src/config/cloud_connect/system/console/src/sys_console.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/src/azure/core/az_http_pipeline.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/src/azure/iot/az_iot_hub_client_twin.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/src/azure/iot/az_iot_pnp_client_commands.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/inc/azure/core/az_json.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/azure-sdk-for-c/sdk/inc/azure/iot/az_iot_pnp_client.h</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/inc/azure/iot/az_iot_pnp_client.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/led.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/azutil.h</file>
+            <file>file:/D:/Harmony/latest/firmware/src/azutil.c</file>
+            <file>file:/D:/Harmony/latest/azure-sdk-for-c/sdk/src/azure/iot/az_iot_hub_client_methods.c</file>
+        </group>
+    </open-files>
+</project-private>

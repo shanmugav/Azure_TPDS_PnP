@@ -1,0 +1,226 @@
+[
+  {
+    "@id": "dtmi:com:Microchip:CryptoAuthTrustPlatform_HR9;1",
+    "@type": "Interface",
+    "contents": [
+    {
+        "@type": [
+          "Telemetry",
+          "NumberValue"
+        ],
+        "displayName": {
+          "en": "Heart Rate"
+        },
+        "name": "HeartRate",
+        "schema": "integer",
+        "displayUnit": {
+          "en": "BPM"
+        },
+        "maxValue": 300,
+        "minValue": 0
+    },
+    {
+        "@type": [
+          "Property",
+          "StringValue"
+        ],
+        "displayName": {
+          "en": "Patient Name"
+        },
+        "name": "PatientName",
+        "schema": "string",
+        "writable": true,
+        "displayUnit": {
+          "en": "Patient Name"
+        },
+        "maxLength": 255,
+        "minLength": 2
+    },
+    {
+        "@type": "Property",
+        "description": {
+            "en": "Current state of the STATUS LED"
+        },
+        "displayName": {
+            "en": "STATUS LED"
+        },
+        "name": "LED_STATUS",
+        "schema": "dtmi:com:Microchip:CryptoAuthTrustPlatform_HR9:LedState;1",
+        "writable": false
+    },
+    {
+        "@type": [
+            "Property",
+            "TimeSpan"
+        ],
+        "description": {
+            "en": "Sets interval to send telemetry in seconds"
+        },
+        "displayName": {
+            "en": "Set Telemetry Interval"
+        },
+        "name": "telemetryInterval",
+        "schema": "integer",
+        "unit": "second",
+        "writable": true
+    },
+    {
+      "@type": "Command",
+      "description": {
+          "en": "Reboot with the specified delay (e.g. PT5S = 5 seconds)"
+      },
+      "displayName": {
+          "en": "Reboot"
+      },
+      "name": "reboot",
+      "request": {
+          "@type": "CommandPayload",
+          "description": {
+              "en": "Number of seconds to delay reboot (e.g. PT5S = 5 seconds)"
+          },
+          "displayName": {
+              "en": "Reboot Delay"
+          },
+          "name": "delay",
+          "schema": "duration"
+      },
+      "response": {
+          "@type": "CommandPayload",
+          "displayName": {
+              "en": "Response for command"
+          },
+          "name": "response",
+          "schema": {
+              "@type": "Object",
+              "fields": [
+                  {
+                      "displayName": {
+                          "en": "Message from reboot handler"
+                      },
+                      "name": "status",
+                      "schema": "string"
+                  },
+                  {
+                      "displayName": {
+                          "en": "Number of seconds to delay the reboot"
+                      },
+                      "name": "delay",
+                      "schema": "integer"
+                  }
+              ]
+          }
+      }
+    },
+    {
+      "@type": "Command",
+      "description": {
+          "en": "Send a text message for the device to echo back to the cloud"
+      },
+      "displayName": {
+          "en": "Echo Message"
+      },
+      "name": "echoMsg",
+      "request": {
+          "@type": "CommandPayload",
+          "description": {
+              "en": "Text message for the device to echo back to the cloud"
+          },
+          "displayName": {
+              "en": "Echo Message"
+          },
+          "name": "payload",
+          "schema": {
+              "@type": "Object",
+              "fields": [
+                  {
+                      "displayName": {
+                          "en": "Message to echo"
+                      },
+                      "name": "echoMessage",
+                      "schema": "string"
+                  }
+              ]
+          }
+      },
+      "response": {
+          "@type": "CommandPayload",
+          "displayName": {
+              "en": "Response for command"
+          },
+          "name": "response",
+          "schema": {
+              "@type": "Object",
+              "fields": [
+                  {
+                      "displayName": {
+                          "en": "Status message from echo message handler"
+                      },
+                      "name": "status",
+                      "schema": "string"
+                  },
+                  {
+                    "displayName": {
+                        "en": "Message received from echo message handler"
+                    },
+                    "name": "echo",
+                    "schema": "string"
+                  }
+              ]
+          }
+        }
+    }
+    ],
+    "description": {
+      "en": "Reports patient's heart rate and STATUS LED state"
+    },
+    "displayName": {
+      "en": "CryptoAuth Trust Platform Development Kit + Heart Rate 9 Click"
+    },
+    "schemas": [
+      {
+          "@id": "dtmi:com:Microchip:CryptoAuthTrustPlatform_HR9:LedState;1",
+          "@type": "Enum",
+          "enumValues": [
+              {
+                  "comment": "LED is in the OFF state",
+                  "description": {
+                      "en": "LED is turned OFF"
+                  },
+                  "displayName": {
+                      "en": "LED OFF"
+                  },
+                  "enumValue": 0,
+                  "name": "Off"
+              },
+              {
+                  "comment": "LED is in the ON state",
+                  "description": {
+                      "en": "LED is turned ON"
+                  },
+                  "displayName": {
+                      "en": "LED ON"
+                  },
+                  "enumValue": 1,
+                  "name": "On"
+              },
+              {
+                  "comment": "LED is Blinking",
+                  "description": {
+                      "en": "LED is Blinking"
+                  },
+                  "displayName": {
+                      "en": "LED Blinking"
+                  },
+                  "enumValue": 2,
+                  "name": "Blink"
+              }
+          ],
+          "valueSchema": "integer"
+      }
+    ],
+    "@context": [
+      "dtmi:iotcentral:context;2",
+      "dtmi:dtdl:context;2"
+    ]
+  }
+]

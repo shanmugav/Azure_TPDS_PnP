@@ -1,0 +1,14 @@
+configName: cloud_connect
+folderName: cloud_connect_dm320118
+format_version: v1.0
+frameworkPath: E:\Harmony3
+processor: ATSAMD21E18A
+projectName: cloud_connect_dm320118
+settings:
+  PackageFilter: bsp;core;core_apps_sam_a5d2;crypto;cryptoauthlib;csp;Devices;dev_packs;harmony-services;quick_docs;wireless_apps_pic32cxbz2_wbz45;wireless_ble;wireless_pic32cxbz_wbz;wireless_system_pic32cxbz_wbz;wireless_wifi;wireless_zigbee
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\SAMD21_DFP\3.4.116\samd21a\atdf\ATSAMD21E18A.atdf
