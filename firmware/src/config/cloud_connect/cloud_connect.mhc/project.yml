@@ -873,21 +873,21 @@ files:
   physicalPath: peripheral\port
   security: NON_SECURE
   type: SOURCE
-  userChecksum: C1866D7895ABF4DBFB29FDB5A08EA982
-- generatedChecksum: 8F1E50386A1AA5B15FD12BF531F32EDE
+  userChecksum: DFA625B372BBC333EE9661EC6E989BB7
+- generatedChecksum: 036F8EC540FEDAECAA5529F38355AE80
   logicalPath: config\cloud_connect\peripheral\rtc
   name: plib_rtc_clock.c
   physicalPath: peripheral\rtc
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 8F1E50386A1AA5B15FD12BF531F32EDE
-- generatedChecksum: 87D39D721F3F2B68C7ECA581A40A281E
+  userChecksum: 036F8EC540FEDAECAA5529F38355AE80
+- generatedChecksum: 4C7D11279964241452D3B06F05CB6672
   logicalPath: config\cloud_connect\peripheral\sercom\usart
   name: plib_sercom0_usart.c
   physicalPath: peripheral\sercom\usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 87D39D721F3F2B68C7ECA581A40A281E
+  userChecksum: 4C7D11279964241452D3B06F05CB6672
 - generatedChecksum: B23BFC2C489C56EF0C4CD1B8365B8DDB
   logicalPath: config\cloud_connect\peripheral\sercom\spi_master
   name: plib_sercom1_spi_master.c

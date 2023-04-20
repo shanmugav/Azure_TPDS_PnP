@@ -1035,12 +1035,9 @@ az_result process_device_twin_property(
         }
          else if (az_json_token_is_text_equal(&jr.token, led_property_name_span))
         {
-            debug_printWarn("AZURE: Received LED");
             RETURN_ERR_IF_FAILED(az_json_reader_next_token(&jr));
             RETURN_ERR_IF_FAILED(az_json_token_get_int32(&jr.token,
                                                          &twin_properties->desired_led_status));
-            
-            led_status = twin_properties->desired_led_status;
             twin_properties->flag.led_found = 1;
         }
         else
@@ -1275,6 +1272,7 @@ if (twin_properties->flag.is_initial_get || twin_properties->flag.ip_address_upd
     // Set debug level
     if (twin_properties->flag.led_found)
     {
+        led_status=(twin_properties->desired_led_status%3);
         //update led here...
          update_leds(led_status);
 
@@ -1283,7 +1281,7 @@ if (twin_properties->flag.is_initial_get || twin_properties->flag.ip_address_upd
                 rc = append_reported_property_response_int32(
                     &jw,
                     led_property_name_span,
-                    (uint32_t)1,
+                    (uint32_t)led_status,
                     AZ_IOT_STATUS_OK,
                     twin_properties->version_num,
                     resp_success_span)))
@@ -1521,6 +1519,7 @@ else if (twin_properties->flag.is_initial_get)
     // Set debug level
     if (twin_properties->flag.led_found)
     {
+        led_status=(twin_properties->desired_led_status)%3;
         //update led here...
          update_leds(led_status);
 
@@ -1529,7 +1528,7 @@ else if (twin_properties->flag.is_initial_get)
                 rc = append_reported_property_response_int32(
                     &jw,
                     led_property_name_span,
-                    (uint32_t)1,
+                    (uint32_t)led_status,
                     AZ_IOT_STATUS_OK,
                     twin_properties->version_num,
                     resp_success_span)))
@@ -1543,12 +1542,14 @@ else if (twin_properties->flag.is_initial_get)
     }
     else if (twin_properties->flag.is_initial_get)
 {
+        led_status=0;
+        update_leds(led_status);
                 if (az_result_failed(
 #ifdef IOT_PLUG_AND_PLAY_MODEL_ID
                 rc = append_reported_property_response_int32(
                     &jw,
                     led_property_name_span,
-                    (uint32_t)1,
+                    (uint32_t)led_status,
                     AZ_IOT_STATUS_OK,
                     1,
                     resp_success_span)))
