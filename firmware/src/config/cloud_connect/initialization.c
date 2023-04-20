@@ -46,6 +46,7 @@
 #include "configuration.h"
 #include "definitions.h"
 #include "device.h"
+#include "click_routines/click_interface.h"
 
 
 
@@ -313,10 +314,14 @@ void SYS_Initialize ( void* data )
     SERCOM1_SPI_Initialize();
 
 
+    SERCOM0_USART_Initialize();
+
+	SYSTICK_TimerInitialize();
     DMAC_Initialize();
 
     EIC_Initialize();
 
+    heartrate9_example_initialize();
 
     /* Initialize the WINC Driver */
     sysObj.drvWifiWinc = WDRV_WINC_Initialize(0, (SYS_MODULE_INIT*)&wdrvWincInitData);

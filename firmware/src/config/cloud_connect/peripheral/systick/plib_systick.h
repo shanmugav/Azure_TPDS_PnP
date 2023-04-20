@@ -1,18 +1,17 @@
 /*******************************************************************************
-  NVIC PLIB Implementation
+  Interface definition of SYSTICK PLIB.
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    plib_nvic.c
+    plib_systick.h
 
   Summary:
-    NVIC PLIB Source File
+    Interface definition of the System Timer Plib (SYSTICK).
 
   Description:
-    None
-
+    This file defines the interface for the SYSTICK Plib.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -38,72 +37,42 @@
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
 
-#include "device.h"
-#include "plib_nvic.h"
+#ifndef PLIB_SYSTICK_H    // Guards against multiple inclusion
+#define PLIB_SYSTICK_H
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+#ifdef __cplusplus // Provide C++ Compatibility
+    extern "C" {
+#endif
 
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: NVIC Implementation
+// Section: Interface
 // *****************************************************************************
 // *****************************************************************************
 
-void NVIC_Initialize( void )
-{
-
-    /* Enable NVIC Controller */
-    __DMB();
-    __enable_irq();
-
-    /* Enable the interrupt sources and configure the priorities as configured
-     * from within the "Interrupt Manager" of MHC. */
-    NVIC_SetPriority(EIC_IRQn, 3);
-    NVIC_EnableIRQ(EIC_IRQn);
-    NVIC_SetPriority(DMAC_IRQn, 3);
-    NVIC_EnableIRQ(DMAC_IRQn);
-    NVIC_SetPriority(SERCOM0_IRQn, 3);
-    NVIC_EnableIRQ(SERCOM0_IRQn);
-    NVIC_SetPriority(SERCOM1_IRQn, 3);
-    NVIC_EnableIRQ(SERCOM1_IRQn);
-    NVIC_SetPriority(SERCOM2_IRQn, 3);
-    NVIC_EnableIRQ(SERCOM2_IRQn);
-    NVIC_SetPriority(SERCOM3_IRQn, 3);
-    NVIC_EnableIRQ(SERCOM3_IRQn);
-    NVIC_SetPriority(TC3_IRQn, 3);
-    NVIC_EnableIRQ(TC3_IRQn);
-    NVIC_SetPriority(TC5_IRQn, 3);
-    NVIC_EnableIRQ(TC5_IRQn);
+#define SYSTICK_FREQ   48000000U
 
 
+/***************************** SYSTICK API *******************************/
+void SYSTICK_TimerInitialize ( void );
+void SYSTICK_TimerRestart ( void );
+void SYSTICK_TimerStart ( void );
+void SYSTICK_TimerStop ( void );
+void SYSTICK_TimerPeriodSet ( uint32_t period );
+uint32_t SYSTICK_TimerPeriodGet ( void );
+uint32_t SYSTICK_TimerCounterGet ( void );
+uint32_t SYSTICK_TimerFrequencyGet ( void );
+void SYSTICK_DelayMs ( uint32_t delay_ms );
+void SYSTICK_DelayUs ( uint32_t delay_us );
 
-}
+bool SYSTICK_TimerPeriodHasExpired(void);
+#ifdef __cplusplus // Provide C++ Compatibility
+ }
+#endif
 
-void NVIC_INT_Enable( void )
-{
-    __DMB();
-    __enable_irq();
-}
-
-bool NVIC_INT_Disable( void )
-{
-    bool processorStatus = (__get_PRIMASK() == 0U);
-
-    __disable_irq();
-    __DMB();
-
-    return processorStatus;
-}
-
-void NVIC_INT_Restore( bool state )
-{
-    if( state == true )
-    {
-        __DMB();
-        __enable_irq();
-    }
-    else
-    {
-        __disable_irq();
-        __DMB();
-    }
-}
+#endif

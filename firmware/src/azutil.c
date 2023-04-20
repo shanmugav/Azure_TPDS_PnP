@@ -8,7 +8,7 @@
 #include "dti.h"
 #include "debug_print.h"
 #include "azure-sdk-for-c/sdk/inc/azure/iot/az_iot_common.h"
-
+#include "click_routines/click_interface.h"
 
 
 static const az_span twin_request_id_span = AZ_SPAN_LITERAL_FROM_STR("initial_get");
@@ -393,10 +393,11 @@ static az_result build_command_resp_payload(az_span response_span, az_span* resp
 az_result send_telemetry_message(void)
 {
     az_result rc = AZ_OK;
-
     az_span   telemetry_payload_span;
     int32_t heartrate=0;
-  
+    heartrate9_example();
+    extern volatile int8_t last_heart_rate;
+    heartrate=last_heart_rate;
 
     if ((telemetry_disable_flag & (DISABLE_HEARTRATE)))
     {
@@ -1083,7 +1084,7 @@ static az_span get_request_id(void)
 az_result send_reported_property(
     twin_properties_t* twin_properties)
 {
-    az_result      rc;
+   az_result      rc;
     az_json_writer jw;
     az_span        identifier_span;
 
@@ -1104,120 +1105,24 @@ az_result send_reported_property(
     rc = start_json_object(&jw, payload_span);
     RETURN_ERR_WITH_MESSAGE_IF_FAILED(rc, "AZURE:Unable to initialize json writer for property PATCH");
 
-    if (twin_properties->flag.telemetry_interval_found)
+if (twin_properties->flag.is_initial_get || twin_properties->flag.ip_address_updated != 0)
     {
-        if (az_result_failed(
-#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
-                rc = append_reported_property_response_int32(
-                    &jw,
-                    property_telemetry_interval_span,
-                    telemetryInterval,
-                    AZ_IOT_STATUS_OK,
-                    twin_properties->version_num,
-                    resp_success_span)))
-#else
-                rc = append_json_property_int32(
-                    &jw,
-                    property_telemetry_interval_span,
-                    telemetryInterval)))
-#endif
-        {
-            debug_printError("AZURE: Unable to add property for telemetry interval, return code 0x%08x", rc);
-            return rc;
-        }
-    }
-   
-    // Add Yellow LED to the reported property
-    // Example with integer Enum
-    
-    
-
-    // Set debug level
-    if (twin_properties->flag.debug_level_found)
-    {
-        debug_setSeverity((debug_severity_t)twin_properties->desired_debugLevel);
-
-        if (az_result_failed(
-#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
-                rc = append_reported_property_response_int32(
-                    &jw,
-                    debug_level_property_name_span,
-                    (uint32_t)debug_getSeverity(),
-                    AZ_IOT_STATUS_OK,
-                    twin_properties->version_num,
-                    resp_success_span)))
-#else
-                rc = append_json_property_int32(
-                    &jw,
-                    debug_level_property_name_span,
-                    (uint32_t)debug_getSeverity)))
-#endif
-        {
-            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
-            return rc;
-        }
-    }
-   
-    
-    // Set debug level
-    if (twin_properties->flag.led_found)
-    {
-        //update led here...
-         update_leds(led_status);
-
-        if (az_result_failed(
-#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
-                rc = append_reported_property_response_int32(
-                    &jw,
-                    led_property_name_span,
-                    (uint32_t)1,
-                    AZ_IOT_STATUS_OK,
-                    twin_properties->version_num,
-                    resp_success_span)))
-
-#endif
-        {
-            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
-            return rc;
-        }
-       
-    }
-   
-
-    // Add IP Address
-    if (twin_properties->flag.is_initial_get || twin_properties->flag.ip_address_updated != 0)
-    {
-        if (az_result_failed(
-                rc = append_json_property_string(
-                    &jw,
-                    ip_address_property_name_span,
-                    az_span_create_from_str((char*)&deviceIpAddress))))
-        {
-            debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
-            return rc;
-        }
-       
-    }
-    
-
-        // Get/Set Patient Name.
-    if (twin_properties->flag.patient_name_found)
-    {
-        if (az_result_failed(
+        
+        
+         if (az_result_failed(
                 rc = append_reported_property_response_string(
                     &jw,
-                    patient_name_property_name_span,
-                    az_span_create_from_str((char*)&twin_properties->desired_patientName),
+                    ip_address_property_name_span,
+                    az_span_create_from_str((char*)&deviceIpAddress),
                     AZ_IOT_STATUS_OK,
-                    twin_properties->version_num,
+                    1,
                     resp_success_span)))
         {
             debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
             return rc;
         }
-  
+       
     }
-#
     
     if (twin_properties->flag.is_initial_get)
     {
@@ -1276,7 +1181,7 @@ az_result send_reported_property(
             debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
             return rc;
         }
-#if 0 
+
                 if (az_result_failed(
                 rc = append_reported_property_response_string(
                     &jw,
@@ -1289,9 +1194,371 @@ az_result send_reported_property(
             debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
             return rc;
         }
-#endif
+
         
     }
+    else
+    {
+       
+        if (twin_properties->flag.telemetry_interval_found)
+    {
+        if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    property_telemetry_interval_span,
+                    telemetryInterval,
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+#else
+                rc = append_json_property_int32(
+                    &jw,
+                    property_telemetry_interval_span,
+                    telemetryInterval)))
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for telemetry interval, return code 0x%08x", rc);
+            return rc;
+        }
+    }
+   
+    // Add Yellow LED to the reported property
+    // Example with integer Enum
+    
+    
+
+    // Set debug level
+    if (twin_properties->flag.debug_level_found)
+    {
+        debug_setSeverity((debug_severity_t) (twin_properties->desired_debugLevel)%6);
+
+        if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    debug_level_property_name_span,
+                    (uint32_t)debug_getSeverity(),
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+#else
+                rc = append_json_property_int32(
+                    &jw,
+                    debug_level_property_name_span,
+                    (uint32_t)debug_getSeverity)))
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+            return rc;
+        }
+    }
+          // Get/Set Patient Name.
+    if (twin_properties->flag.patient_name_found)
+    {
+        if (az_result_failed(
+                rc = append_reported_property_response_string(
+                    &jw,
+                    patient_name_property_name_span,
+                    az_span_create_from_str((char*)&twin_properties->desired_patientName),
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+        {
+            debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
+            return rc;
+        }
+  
+    }
+
+
+    // Set debug level
+    if (twin_properties->flag.led_found)
+    {
+        //update led here...
+         update_leds(led_status);
+
+        if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    led_property_name_span,
+                    (uint32_t)1,
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+            return rc;
+        }
+       
+    }
+        
+    }
+   
+
+    // Close JSON Payload (appends "}")
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+    if (az_result_failed(rc = az_iot_pnp_client_property_builder_end_reported_status(&pnp_client, &jw)))
+#else
+    if (az_result_failed(rc = az_json_writer_append_end_object(&jw)))
+#endif
+    {
+        debug_printError("AZURE: Unable to append end object, return code  0x%08x", rc);
+        return rc;
+    }
+
+    az_span property_payload_span = az_json_writer_get_bytes_used_in_destination(&jw);
+   
+    if (az_span_size(property_payload_span) > sizeof(pnp_property_payload_buffer))
+    {
+        debug_printError("AZURE: Payload too long : %d", az_span_size(property_payload_span));
+        return AZ_ERROR_NOT_ENOUGH_SPACE;
+    }
+
+    // Publish the reported property payload to IoT Hub
+    identifier_span = get_request_id();
+
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+    rc = az_iot_pnp_client_property_patch_get_publish_topic(&pnp_client,
+#else
+    rc = az_iot_hub_client_twin_patch_get_publish_topic(&iothub_client,
+#endif
+                                                            identifier_span,
+                                                            pnp_property_topic_buffer,
+                                                            sizeof(pnp_property_topic_buffer),
+                                                            NULL);
+    RETURN_ERR_WITH_MESSAGE_IF_FAILED(rc, "AZURE:Failed to get property PATCH topic");
+
+    // Send the reported property
+
+    CLOUD_publishData((uint8_t*)pnp_property_topic_buffer,
+                     az_span_ptr(property_payload_span),
+                   az_span_size(property_payload_span),
+                  1);
+
+    return rc;
+}
+
+/**********************************************
+* Send Reported Property 
+**********************************************/
+az_result send_reported_property_twin(
+    twin_properties_t* twin_properties)
+{
+    az_result      rc;
+    az_json_writer jw;
+    az_span        identifier_span;
+    if (twin_properties->flag.as_uint16 == 0)
+    {
+        // Nothing to do.
+        debug_printTrace("AZURE: No property update");
+        return AZ_OK;
+    }
+
+    debug_printTrace("AZURE: Sending Property flag 0x%x", twin_properties->flag.as_uint16);
+
+    // Clear buffer and initialize JSON Payload. This creates "{"
+    memset(pnp_property_payload_buffer, 0, sizeof(pnp_property_payload_buffer));
+    az_span payload_span = AZ_SPAN_FROM_BUFFER(pnp_property_payload_buffer);
+
+    rc = start_json_object(&jw, payload_span);
+    RETURN_ERR_WITH_MESSAGE_IF_FAILED(rc, "AZURE:Unable to initialize json writer for property PATCH");
+
+    // Add IP Address
+    if (twin_properties->flag.is_initial_get || twin_properties->flag.ip_address_updated != 0)
+    {
+         if (az_result_failed(
+                rc = append_reported_property_response_string(
+                    &jw,
+                    ip_address_property_name_span,
+                    az_span_create_from_str((char*)&deviceIpAddress),
+                    AZ_IOT_STATUS_OK,
+                    (twin_properties->version_num<=0)?1:twin_properties->version_num,
+                    resp_success_span)))
+        {
+            debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
+            return rc;
+        }
+       
+       shared_networking_params.reported=1;
+         
+    }
+ 
+       
+    if (twin_properties->flag.telemetry_interval_found)
+  {
+    if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+            rc = append_reported_property_response_int32(
+                &jw,
+                property_telemetry_interval_span,
+                telemetryInterval,
+                AZ_IOT_STATUS_OK,
+                twin_properties->version_num,
+                resp_success_span)))
+#else
+            rc = append_json_property_int32(
+                &jw,
+                property_telemetry_interval_span,
+                telemetryInterval)))
+#endif
+    {
+        debug_printError("AZURE: Unable to add property for telemetry interval, return code 0x%08x", rc);
+        return rc;
+    }
+}
+else if (twin_properties->flag.is_initial_get)
+{
+    if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+            rc = append_reported_property_response_int32(
+                &jw,
+                property_telemetry_interval_span,
+                telemetryInterval,
+                AZ_IOT_STATUS_OK,
+                1,
+                resp_success_span)))
+#else
+            rc = append_json_property_int32(
+                &jw,
+                property_telemetry_interval_span,
+                telemetryInterval)))
+#endif
+    {
+        debug_printError("AZURE: Unable to add property for telemetry interval, return code 0x%08x", rc);
+        return rc;
+    }
+}
+ 
+// Set debug level
+if (twin_properties->flag.debug_level_found)
+{
+    debug_setSeverity((debug_severity_t) (twin_properties->desired_debugLevel)%6);
+
+    if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+            rc = append_reported_property_response_int32(
+                &jw,
+                debug_level_property_name_span,
+                (uint32_t)debug_getSeverity(),
+                AZ_IOT_STATUS_OK,
+                twin_properties->version_num,
+                resp_success_span)))
+#else
+            rc = append_json_property_int32(
+                &jw,
+                debug_level_property_name_span,
+                (uint32_t)debug_getSeverity)))
+#endif
+    {
+        debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+        return rc;
+    }
+}
+else if (twin_properties->flag.is_initial_get)
+{
+
+
+    if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    debug_level_property_name_span,
+                    (uint32_t)debug_getSeverity(),
+                    AZ_IOT_STATUS_OK,
+                    1,
+                    resp_success_span)))
+#else
+                rc = append_json_property_int32(
+                    &jw,
+                    debug_level_property_name_span,
+                    (uint32_t)debug_getSeverity)))
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+            return rc;
+        }
+}
+          // Get/Set Patient Name.
+    if (twin_properties->flag.patient_name_found)
+    {
+        if (az_result_failed(
+                rc = append_reported_property_response_string(
+                    &jw,
+                    patient_name_property_name_span,
+                    az_span_create_from_str((char*)&twin_properties->desired_patientName),
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+        {
+            debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
+            return rc;
+        }
+
+    }
+else if (twin_properties->flag.is_initial_get)
+{
+       if (az_result_failed(
+                rc = append_reported_property_response_string(
+                    &jw,
+                    patient_name_property_name_span,
+                    az_span_create_from_str((char*)&twin_properties->desired_patientName),
+                    AZ_IOT_STATUS_OK,
+                    1,
+                    resp_success_span)))
+        {
+            debug_printError("AZURE: Unable to add property for IP Address, return code  0x%08x", rc);
+            return rc;
+        }
+
+        
+}
+
+
+    // Set debug level
+    if (twin_properties->flag.led_found)
+    {
+        //update led here...
+         update_leds(led_status);
+
+        if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    led_property_name_span,
+                    (uint32_t)1,
+                    AZ_IOT_STATUS_OK,
+                    twin_properties->version_num,
+                    resp_success_span)))
+
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+            return rc;
+        }
+       
+    }
+    else if (twin_properties->flag.is_initial_get)
+{
+                if (az_result_failed(
+#ifdef IOT_PLUG_AND_PLAY_MODEL_ID
+                rc = append_reported_property_response_int32(
+                    &jw,
+                    led_property_name_span,
+                    (uint32_t)1,
+                    AZ_IOT_STATUS_OK,
+                    1,
+                    resp_success_span)))
+
+#endif
+        {
+            debug_printError("AZURE: Unable to add property for Debug Level, return code 0x%08x", rc);
+            return rc;
+        }
+}
    
 
     // Close JSON Payload (appends "}")

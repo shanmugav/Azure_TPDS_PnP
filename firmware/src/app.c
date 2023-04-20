@@ -588,6 +588,7 @@ static void APP_DataTask(void)
             STATUS_LED_Toggle();
         }
 
+
         if (shared_networking_params.reported == 0)
         {
             twin_properties_t twin_properties;
@@ -597,7 +598,7 @@ static void APP_DataTask(void)
             strcpy(twin_properties.ip_address, deviceIpAddress);
             twin_properties.flag.ip_address_updated = 1;
 
-            if (az_result_succeeded(send_reported_property(&twin_properties)))
+            if (az_result_succeeded(send_reported_property_twin(&twin_properties)))
             {
                 shared_networking_params.reported = 1;
             }
@@ -606,6 +607,7 @@ static void APP_DataTask(void)
                 debug_printError("  APP: Failed to report IP Address property");
             }
         }
+
 
         if (userdata_status.as_uint8 != 0)
         {
@@ -729,7 +731,7 @@ void APP_ReceivedFromCloud_patch(uint8_t* topic, uint8_t* payload)
             debug_printInfo("  APP: Found debug level  value '%d'", twin_properties.desired_debugLevel);
         }
         
-        rc = send_reported_property(&twin_properties);
+        rc = send_reported_property_twin(&twin_properties);
 
         if (az_result_failed(rc))
         {
@@ -757,7 +759,7 @@ void APP_ReceivedFromCloud_twin(uint8_t* topic, uint8_t* payload)
     if (az_result_failed(rc = process_device_twin_property(topic, payload, &twin_properties)))
     {
         // If the item can't be found, the desired temp might not be set so take no action
-        debug_printError("  APP: Could not parse desired property, return code 0x%08x\n", rc);
+        debug_printError("  APP Twin: Could not parse desired property, return code 0x%08x\n", rc);
     }
     else
     {
@@ -768,7 +770,7 @@ void APP_ReceivedFromCloud_twin(uint8_t* topic, uint8_t* payload)
 
         if (twin_properties.flag.led_found == 1)
         {
-            debug_printInfo("  APP: Found led_status Value 1");
+            debug_printInfo("  APP: Found led_status Value");
         }
 
         if (twin_properties.flag.telemetry_interval_found == 1)
@@ -786,7 +788,7 @@ void APP_ReceivedFromCloud_twin(uint8_t* topic, uint8_t* payload)
             debug_printInfo("  APP: Found Patient Name Found Value '%s'", twin_properties.desired_patientName);
         }
         
-        //rc = send_reported_property(&twin_properties);
+        rc = send_reported_property_twin(&twin_properties);
 
         if (az_result_failed(rc))
         {
@@ -810,7 +812,7 @@ void APP_SendToCloud(void)
 {
     if (iothubConnected)
     {
-        //send_telemetry_message();
+        send_telemetry_message();
     }
 }
 
