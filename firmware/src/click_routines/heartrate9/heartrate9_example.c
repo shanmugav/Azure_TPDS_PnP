@@ -51,6 +51,7 @@
 #include "definitions.h"                // SYS function prototypes
 #include "heartrate9.h"
 #include "app.h"
+#include "debug_print.h"
 
 volatile int8_t last_heart_rate=0;
 /**
@@ -68,7 +69,7 @@ void heartrate9_example(void) {
             heartrate_data      = heartrate9_read_byte();
             last_heart_rate =  heartrate_data;
         }
-        APP_DebugPrintf("Heartrate = %d bpm \t\r\n", (uint8_t)heartrate_data);
+        debug_printInfo("Heartrate = %d bpm \t\r\n", (uint8_t)heartrate_data);
     }
 }
 

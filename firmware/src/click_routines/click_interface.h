@@ -51,6 +51,7 @@
 
 #include <xc.h>
 #include <stdint.h>
+#include "configuration.h"
 
 /**	Click routine interfaces/resources Macro Declarations
  *

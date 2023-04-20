@@ -727,20 +727,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 9875826C52C708A01E264B37F020AA76
-- generatedChecksum: CDF5602C19E23AB1A69F7E24249C336B
+- generatedChecksum: 17DEFA95A743DEAD3EED237758952D14
   logicalPath: config\cloud_connect
   name: initialization.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: CDF5602C19E23AB1A69F7E24249C336B
-- generatedChecksum: 117A2BDDF6B4CAA398AF441CCA0B117B
+  userChecksum: 8DF996D90B7E4FFEBD5FAD8F8DF31237
+- generatedChecksum: 8108D4D009890E955489AAA4F13AFF00
   logicalPath: config\cloud_connect
   name: interrupts.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 117A2BDDF6B4CAA398AF441CCA0B117B
+  userChecksum: 8108D4D009890E955489AAA4F13AFF00
 - generatedChecksum: 2CDCA8CDF135BDEB85FDFC0A2A991C0B
   logicalPath: config\cloud_connect
   name: libc_syscalls.c
@@ -825,13 +825,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: D270C52C6685F48662C33EC4474B530F
-- generatedChecksum: 37B70314526635A5C08A6C746D7AE58E
+- generatedChecksum: 1F6C8B75F71B51752338C7C8FC770055
   logicalPath: config\cloud_connect\peripheral\clock
   name: plib_clock.c
   physicalPath: peripheral\clock
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 37B70314526635A5C08A6C746D7AE58E
+  userChecksum: 1F6C8B75F71B51752338C7C8FC770055
 - generatedChecksum: 449EB8ADE3FE65CFBE15F2B18A89CC8F
   logicalPath: config\cloud_connect\peripheral\dmac
   name: plib_dmac.c
@@ -853,13 +853,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: C3ECDED3D6301DB0DE622293ED615D21
-- generatedChecksum: 9D5C9207CE9714130B47F66502FB2E41
+- generatedChecksum: 9CA44CBF6D55319FB9959D2E76F3B8AE
   logicalPath: config\cloud_connect\peripheral\nvic
   name: plib_nvic.c
   physicalPath: peripheral\nvic
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 9D5C9207CE9714130B47F66502FB2E41
+  userChecksum: 9CA44CBF6D55319FB9959D2E76F3B8AE
 - generatedChecksum: CDBE0E5D94C53410F5F34B566B5FF51F
   logicalPath: config\cloud_connect\peripheral\nvmctrl
   name: plib_nvmctrl.c
@@ -867,13 +867,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: CDBE0E5D94C53410F5F34B566B5FF51F
-- generatedChecksum: B8FD2E8B387EFA501F74CAFABBB09021
+- generatedChecksum: C1866D7895ABF4DBFB29FDB5A08EA982
   logicalPath: config\cloud_connect\peripheral\port
   name: plib_port.c
   physicalPath: peripheral\port
   security: NON_SECURE
   type: SOURCE
-  userChecksum: B8FD2E8B387EFA501F74CAFABBB09021
+  userChecksum: C1866D7895ABF4DBFB29FDB5A08EA982
 - generatedChecksum: 8F1E50386A1AA5B15FD12BF531F32EDE
   logicalPath: config\cloud_connect\peripheral\rtc
   name: plib_rtc_clock.c
@@ -881,6 +881,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 8F1E50386A1AA5B15FD12BF531F32EDE
+- generatedChecksum: 87D39D721F3F2B68C7ECA581A40A281E
+  logicalPath: config\cloud_connect\peripheral\sercom\usart
+  name: plib_sercom0_usart.c
+  physicalPath: peripheral\sercom\usart
+  security: NON_SECURE
+  type: SOURCE
+  userChecksum: 87D39D721F3F2B68C7ECA581A40A281E
 - generatedChecksum: B23BFC2C489C56EF0C4CD1B8365B8DDB
   logicalPath: config\cloud_connect\peripheral\sercom\spi_master
   name: plib_sercom1_spi_master.c
@@ -902,6 +909,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: BFB0776A381AF0958040CF6857CE0DE2
+- generatedChecksum: 159E8DEC967119DE2FB240B9CA3A1035
+  logicalPath: config\cloud_connect\peripheral\systick
+  name: plib_systick.c
+  physicalPath: peripheral\systick
+  security: NON_SECURE
+  type: SOURCE
+  userChecksum: 159E8DEC967119DE2FB240B9CA3A1035
 - generatedChecksum: F80C3B2235940D8A40E4B8C0460BBCF0
   logicalPath: config\cloud_connect\peripheral\tc
   name: plib_tc3.c
@@ -1406,13 +1420,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 2AD9700A41DC94A60C663A17CEDB2703
-- generatedChecksum: C1DB9044C91DB8096031C09FD09048F7
+- generatedChecksum: 05B29663169C2969E2CD095311A38EDA
   logicalPath: config\cloud_connect
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: C1DB9044C91DB8096031C09FD09048F7
+  userChecksum: 05B29663169C2969E2CD095311A38EDA
 - generatedChecksum: 4821302AA348DF2D25B60299A468C2D7
   logicalPath: config\cloud_connect
   name: device.h
@@ -1567,13 +1581,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 4017D6C4D2082CB4A87FEFE5411B6559
-- generatedChecksum: 363015FA3DA800B581C75280CD2AC214
+- generatedChecksum: 0D4AAD0D2BCDBBA2D5629D4B3D63F5DD
   logicalPath: config\cloud_connect
   name: interrupts.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 363015FA3DA800B581C75280CD2AC214
+  userChecksum: 0D4AAD0D2BCDBBA2D5629D4B3D63F5DD
 - generatedChecksum: FC40CC8D1F45A8B3CA19F9E395DC05BE
   logicalPath: config\cloud_connect\driver\winc\include\drv\driver
   name: m2m_hif.h
@@ -1819,6 +1833,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 1B603FD2A1A26E2EFECC96A9647DEDC7
+- generatedChecksum: 206FB7E73E2D956689D908A299491A33
+  logicalPath: config\cloud_connect\peripheral\sercom\usart
+  name: plib_sercom0_usart.h
+  physicalPath: peripheral\sercom\usart
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 206FB7E73E2D956689D908A299491A33
 - generatedChecksum: 1335F2FC9F96C231AC58802D79E9EDFA
   logicalPath: config\cloud_connect\peripheral\sercom\spi_master
   name: plib_sercom1_spi_master.h
@@ -1861,6 +1882,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 63CAB47DCDFFA547090FA01C1599F9DF
+- generatedChecksum: 71FC0B69A5959D5F85122445B3B5DDEC
+  logicalPath: config\cloud_connect\peripheral\systick
+  name: plib_systick.h
+  physicalPath: peripheral\systick
+  security: NON_SECURE
+  type: HEADER
+  userChecksum: 71FC0B69A5959D5F85122445B3B5DDEC
 - generatedChecksum: 0DE96936AB21998A284FA176F870E596
   logicalPath: config\cloud_connect\peripheral\tc
   name: plib_tc3.h
@@ -2505,13 +2533,13 @@ files:
   security: NON_SECURE
   type: LINKER
   userChecksum: 44E2C04C528027B91BA2A9C94899A5C3
-- generatedChecksum: F42F2926FD9595941DC0519FDE9595CB
+- generatedChecksum: 659FD1E0AF4AD1A869A9C0925E6479FF
   logicalPath: ''
   name: pin_configurations.csv
   physicalPath: ''
   security: NON_SECURE
   type: IMPORTANT
-  userChecksum: F42F2926FD9595941DC0519FDE9595CB
+  userChecksum: 659FD1E0AF4AD1A869A9C0925E6479FF
 format_version: v1.0
 libraries: []
 settings:

@@ -173,6 +173,8 @@ az_result send_telemetry_message(void);
 az_result send_reported_property(
     twin_properties_t* twin_properties);
 
+az_result send_reported_property_twin(twin_properties_t* twin_properties);
+
 az_result process_direct_method_command(
     uint8_t*                           payload,
 #ifdef IOT_PLUG_AND_PLAY_MODEL_ID
