@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#define CLOUD_ENDPOINT "WLSWGAZURE.azure-devices.net"
+#define CLOUD_ENDPOINT "HR9HeartRate.azure-devices.net"
 
 #ifdef __cplusplus
 }

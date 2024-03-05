@@ -118,15 +118,15 @@ bool RTC_RTCCTimeSet (struct tm * initialTime )
 void RTC_RTCCTimeGet ( struct tm * currentTime )
 {
     uint32_t dataClockCalendar = 0U;
-	
-	/* Added temp variable for suppressing MISRA C 2012 Rule : 10.x. 
+
+	/* Added temp variable for suppressing MISRA C 2012 Rule : 10.x.
 	   Please don't ignore this variable for any future modifications */
 	uint32_t temp;
 
     /* Enable read-synchronization for CLOCK register to avoid CPU stall */
     RTC_ClockReadSynchronization();
     dataClockCalendar = RTC_REGS->MODE2.RTC_CLOCK;
-    
+
 	temp = ((dataClockCalendar & RTC_MODE2_CLOCK_HOUR_Msk) >> RTC_MODE2_CLOCK_HOUR_Pos);
     currentTime->tm_hour = (int)temp;
 	temp = ((dataClockCalendar & RTC_MODE2_CLOCK_MINUTE_Msk) >> RTC_MODE2_CLOCK_MINUTE_Pos);

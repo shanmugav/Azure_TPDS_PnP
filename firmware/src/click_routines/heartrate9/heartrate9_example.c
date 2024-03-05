@@ -50,6 +50,7 @@
 #include <stdint.h>
 #include "definitions.h"                // SYS function prototypes
 #include "heartrate9.h"
+#include "heartrate9_example.h"
 #include "app.h"
 #include "debug_print.h"
 

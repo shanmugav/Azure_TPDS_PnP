@@ -395,9 +395,10 @@ az_result send_telemetry_message(void)
     az_result rc = AZ_OK;
     az_span   telemetry_payload_span;
     int32_t heartrate=0;
-    heartrate9_example();
+  
     extern volatile int8_t last_heart_rate;
-    heartrate=last_heart_rate;
+     heartrate9_example();
+     heartrate=last_heart_rate;
 
     if ((telemetry_disable_flag & (DISABLE_HEARTRATE)))
     {
@@ -1012,7 +1013,7 @@ az_result process_device_twin_property(
             twin_properties->flag.debug_level_found = 1;
             
         }
-#if 0
+
         else if (az_json_token_is_text_equal(&jr.token, disable_telemetry_name_span))
         {
             // found writable property : Disable Telemetry
@@ -1021,7 +1022,7 @@ az_result process_device_twin_property(
                                                           &twin_properties->telemetry_disable_flag));
             twin_properties->flag.telemetry_disable_found = 1;
         }
-#endif
+
        else if (az_json_token_is_text_equal(&jr.token, patient_name_property_name_span))
         {
             // found writable property to control Yellow LED
@@ -1038,6 +1039,7 @@ az_result process_device_twin_property(
             RETURN_ERR_IF_FAILED(az_json_reader_next_token(&jr));
             RETURN_ERR_IF_FAILED(az_json_token_get_int32(&jr.token,
                                                          &twin_properties->desired_led_status));
+            led_status = twin_properties->desired_led_status;
             twin_properties->flag.led_found = 1;
         }
         else
@@ -1780,4 +1782,5 @@ bool send_property_from_uart(int cmdIndex, char* data)
 
     return true;
 }
+
 

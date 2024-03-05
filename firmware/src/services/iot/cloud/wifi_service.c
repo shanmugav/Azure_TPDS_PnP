@@ -43,7 +43,7 @@ SOFTWARE.
 #define CLOUD_NTP_TASK_INTERVAL        500L
 #define SOFT_AP_CONNECT_RETRY_INTERVAL 1000L
 
-#define CFG_WLAN_AP_NAME "Sathvika"
+#define CFG_WLAN_AP_NAME "Naruto"
 #define CFG_WLAN_AP_IP_ADDRESS \
     {                          \
         192, 168, 1, 1         \

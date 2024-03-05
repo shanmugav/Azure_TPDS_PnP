@@ -1302,7 +1302,7 @@ mqttCurrentState MQTT_TransmissionHandler(mqttContext* mqttConnectionPtr)
                         if (txPublishPacketPending != NULL)
                         {
                             // A messsage was published with QoS.  Wait for PUBACK.
-                            debug_printGood(" MQTT: Waiting for PUBACK");
+                            //debug_printGood(" MQTT: Waiting for PUBACK");
                         }
                         else
                         {

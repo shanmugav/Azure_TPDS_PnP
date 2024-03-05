@@ -37,7 +37,7 @@
 #include "driver/winc/include/drv/driver/ecc_types.h"
 
 extern uint8_t      cryptoDeviceInitialized;
-#define SECURE_ELEMENT_ADDRESS 0x6C
+#define SECURE_ELEMENT_ADDRESS 0x6A
 
 uint8_t CRYPTO_CLIENT_printPublicKey(char* s);
 uint8_t CRYPTO_CLIENT_printSerialNumber(char* s);

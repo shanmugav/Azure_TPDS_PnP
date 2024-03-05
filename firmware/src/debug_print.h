@@ -71,6 +71,7 @@ static const char*     severity_strings[] = {
     CSI_YELLOW "  WARN" CSI_WHITE,
     CSI_CYAN " DEBUG" CSI_WHITE,
     CSI_WHITE "  INFO" CSI_NORMAL CSI_WHITE,
+    CSI_MAGENTA "  TRACE" CSI_NORMAL CSI_WHITE,
 };
 
 static const char* level_strings[] = {

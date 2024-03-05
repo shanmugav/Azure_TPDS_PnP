@@ -10,11 +10,13 @@
 #endif
 
 
-
 /** Include Device Support Options */
 #define ATCA_ATECC608_SUPPORT
 
-
+/** Provide Maximum packet size for the command to be sent and received */
+#ifndef MAX_PACKET_SIZE
+#define MAX_PACKET_SIZE     (1072U)
+#endif
 
 
 /* Polling Configuration Options  */
@@ -195,6 +197,11 @@
 #endif
 
 
+
+#ifndef ATCA_PREPROCESSOR_WARNING
+#define ATCA_PREPROCESSOR_WARNING     false
+#endif
+
 /* Define generic interfaces to the processor libraries */
 
 #define PLIB_I2C_ERROR          SERCOM_I2C_ERROR
@@ -222,7 +229,7 @@ typedef struct atca_plib_i2c_api
 extern atca_plib_i2c_api_t sercom2_plib_i2c_api;
 
 /** Define certificate templates to be supported. */
-#define ATCA_TFLEX_SUPPORT
+#define ATCA_TNGTLS_SUPPORT
 
 
 #define ATCA_TEST_MULTIPLE_INSTANCES

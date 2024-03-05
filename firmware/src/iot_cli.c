@@ -61,7 +61,7 @@ const char* const cli_version_number      = "2.0";
 const char* const firmware_version_number = "2.0.0";
 static char*      ateccsn                 = NULL;
 
-static void reconnect_cmd(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+
 static void get_set_wifi(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void get_public_key(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void get_device_id(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
@@ -69,9 +69,12 @@ static void get_cli_version(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void get_firmware_version(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void get_set_debug_level(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void get_set_dps_idscope(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+static void get_cloud_connection_status(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+#ifdef  SEND_TELEMETRY_PROPERTY
 static void send_telemetry(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void process_property(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
-static void get_cloud_connection_status(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+static void reconnect_cmd(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+#endif
 
 extern userdata_status_t userdata_status;
 
@@ -80,10 +83,7 @@ extern userdata_status_t userdata_status;
 
 static const SYS_CMD_DESCRIPTOR _iotCmdTbl[] =
     {
-        {"property", process_property, ": Send and receive device property from cloud //Usage: property <index>, <data(hex)>"},
-        {"telemetry", send_telemetry, ": Send data to cloud as telemetry //Usage: telemetry <index>, <data(hex)>"},
         {"idscope", get_set_dps_idscope, ": Get and Set Azure DPS ID Scope //Usage: idscope [ID Scope]"},
-        {"reconnect", reconnect_cmd, ": MQTT Reconnect "},
         {"wifi", get_set_wifi, ": Set Wifi credentials //Usage: wifi <ssid>[,<pass>,[authType]] "},
         {"cloud", get_cloud_connection_status, ": Get MQTT Connection Status"},
         {"key", get_public_key, ": Get ECC Public Key "},
@@ -161,13 +161,6 @@ static void get_set_debug_level(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** ar
     {
         (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "Debug level must be between 0 (Least) and 5 (Most) \r\n");
     }
-}
-
-static void reconnect_cmd(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv)
-{
-    const void* cmdIoParam = pCmdIO->cmdIoParam;
-    MQTT_Disconnect(MQTT_GetClientConnectionInfo());
-    (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "OK\r\n");
 }
 
 static void show_wifi_help(SYS_CMD_DEVICE_NODE* pCmdIO)
@@ -408,12 +401,14 @@ static void get_set_dps_idscope(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** ar
     return;
 }
 
+#ifdef SEND_TELEMETRY_PROPERTY
+
 static void show_send_telemetry_help(SYS_CMD_DEVICE_NODE* pCmdIO)
 {
     const void* cmdIoParam = pCmdIO->cmdIoParam;
     (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "Send Telemetry <Index>,<Data>");
     (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM " Index: Action [Example]");
-    (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM " [SHAN] not supported 0: Reset Dedicated Telemetry Interface (DTI) [e.g. telemetry 0,0]");
+    (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "  not supported 0: Reset Dedicated Telemetry Interface (DTI) [e.g. telemetry 0,0]");
     (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM " 1~4: Update Signed Integer in hex (4 bytes max) [e.g. telemetry 2,CAFEBEEF]");
     (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM " 5~6: Update Double in hex (8 bytes) [e.g. telemetry 5,F537A021CF015B44]");
     (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM " 7~8: Update Float in hex (4 bytes) [e.g. telemetry 8,418345E1]");
@@ -598,3 +593,12 @@ static void process_property(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv)
 
     return;
 }
+
+static void reconnect_cmd(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv)
+{
+    const void* cmdIoParam = pCmdIO->cmdIoParam;
+    MQTT_Disconnect(MQTT_GetClientConnectionInfo());
+    (*pCmdIO->pCmdApi->msg)(cmdIoParam, LINE_TERM "OK\r\n");
+}
+
+#endif

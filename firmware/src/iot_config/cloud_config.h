@@ -21,7 +21,7 @@
 // <s> provisioning id scope
 // <i> provisioning id scope of the DPS service
 // <id> id
-#define PROVISIONING_ID_SCOPE "0ne0094A571"
+#define PROVISIONING_ID_SCOPE ""
 
 // </h>
 
