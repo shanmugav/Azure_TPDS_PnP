@@ -52,4 +52,5 @@ az_iot_hub_client iothub_client;
 * device_id = up to 128
 * 25 + 50 + 128 = 203
 */
-char mqtt_username_buffer[203 + 1];
+
+char mqtt_username_buffer[MQTT_USERNAME_BYTES];

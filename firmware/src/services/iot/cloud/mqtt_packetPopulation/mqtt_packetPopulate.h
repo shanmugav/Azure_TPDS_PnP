@@ -30,11 +30,13 @@
 #include "azure/core/az_span.h"
 #include "azure/iot/az_iot_pnp_client.h"
 
+#define MQTT_USERNAME_BYTES 224
+
 extern char*             hub_hostname;
 extern uint8_t           device_id_buffer[128 + 1];
 extern az_span           device_id_span;
 extern az_iot_pnp_client pnp_client;
-extern char              mqtt_username_buffer[203 + 1];
+extern char              mqtt_username_buffer[MQTT_USERNAME_BYTES];
 
 typedef struct
 {

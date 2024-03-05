@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="65">
   <projectmakefile>Makefile</projectmakefile>
-  <defaultConf>2</defaultConf>
+  <defaultConf>0</defaultConf>
   <confs>
     <conf name="cloud_connect" type="2">
       <platformToolSN>:=MPLABComm-USB-Microchip:=&lt;vid>03EB:=&lt;pid>2175:=&lt;rev>0100:=&lt;man>Microchip Technology Incorporated:=&lt;prod>nEDBG CMSIS-DAP:=&lt;sn>MCHP3311061800003208:=&lt;drv>x:=&lt;xpt>h:=end</platformToolSN>
@@ -41,7 +41,7 @@
     </conf>
     <conf name="AZURE_CONNECT" type="2">
       <platformToolSN>:=MPLABComm-USB-Microchip:=&lt;vid>03EB:=&lt;pid>2175:=&lt;rev>0100:=&lt;man>Microchip Technology Incorporated:=&lt;prod>nEDBG CMSIS-DAP:=&lt;sn>MCHP3311061800003208:=&lt;drv>x:=&lt;xpt>h:=end</platformToolSN>
-      <languageToolchainDir>C:\Program Files\Microchip\xc32\v3.01\bin</languageToolchainDir>
+      <languageToolchainDir>C:\Program Files\Microchip\xc32\v4.35\bin</languageToolchainDir>
       <mdbdebugger version="1">
         <placeholder1>place holder 1</placeholder1>
         <placeholder2>place holder 2</placeholder2>

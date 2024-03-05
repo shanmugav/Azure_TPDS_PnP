@@ -221,7 +221,7 @@ static int8_t connectMQTTSocket(void)
     int8_t        sslInit;
     socketState_t socketState = getSocketState();
 
-    debug_printInfo("CLOUD: Connecting Socket to '%s'", mqtt_host);
+    debug_printInfo("CLOUD: IOT Connecting Socket to '%s'", mqtt_host);
 
     sslInit = m2m_ssl_init(NETWORK_wifiSslCallback);
     if (sslInit != M2M_SUCCESS)
@@ -267,6 +267,15 @@ static int8_t connectMQTTSocket(void)
                                  SO_SSL_ENABLE_SNI_VALIDATION,
                                  &optVal,
                                  sizeof(optVal));
+            
+               optVal = 1;
+
+            ret = BSD_setsockopt(*context->tcpClientSocket,
+                                 SOL_SSL_SOCKET,
+                                 SO_SSL_BYPASS_X509_VERIF,
+                                 &optVal,
+                                 sizeof(optVal));
+     
         }
 
         if (ret == BSD_SUCCESS)

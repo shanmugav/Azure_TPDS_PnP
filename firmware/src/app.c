@@ -53,7 +53,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-
+#include "click_routines/heartrate9/heartrate9_example.h"
 #include "app.h"
 #include "wdrv_winc_client_api.h"
 #include "iot_config/IoT_Sensor_Node_config.h"
@@ -82,18 +82,28 @@
 #include "tng/tng_atcacert_client.h"
 #include "tng/tng_atca.h"
 #include "tng/tngtls_cert_def_1_signer.h"
-#include "cust_def_device.h"
-#include "cust_def_signer.h"
+#include "tngtls_cert_def_1_signer.h"
+#include "tngtls_cert_def_3_device.h"
+#include "tng_root_cert.h"
 #if CFG_ENABLE_CLI
 #include "system/command/sys_command.h"
 #endif
 
-#define WLAN_SSID                                "Sathvika"
+#define WLAN_SSID                                "Naruto"
 #define WLAN_PSK                                 "2ri4-yowp-ied7"
 #if !defined(WLAN_SSID) || !defined(WLAN_PSK)
     #error WLAN/WiFi SSID and Password are not defined! \
             Uncomment defines and replace xxxxxxxxxx with SSID and Password!
 #endif
+
+
+#define MAX_TLS_CERT_LENGTH         1024
+#define SIGNER_PUBLIC_KEY_MAX_LEN   64
+#define SIGNER_CERT_MAX_LEN         600 //Set Maximum of existing certs
+#define DEVICE_CERT_MAX_LEN         600
+#define CERT_SN_MAX_LEN             32
+#define TLS_SRV_ECDSA_CHAIN_FILE    "ECDSA.lst"
+#define INIT_CERT_BUFFER_LEN        (MAX_TLS_CERT_LENGTH*sizeof(uint32_t) - TLS_FILE_NAME_MAX*2 - SIGNER_CERT_MAX_LEN - DEVICE_CERT_MAX_LEN)
 
 
 // *****************************************************************************
@@ -118,12 +128,6 @@ void transfer_ecc_certs_to_winc(void);
 extern LED_STATUS led_status;
 static char APP_WiFiApList[APP_BUFFER_SIZE - 1];
 
-static char* LED_Property[3] = {
-    "Off",
-    "On",
-    "Blink",
-};
-
 #ifdef CFG_MQTT_PROVISIONING_HOST
 void iot_provisioning_completed(void);
 #endif
@@ -140,7 +144,7 @@ void iot_provisioning_completed(void);
 #define APP_SW_DEBOUNCE_INTERVAL 1460000L
 
 /* WIFI SSID, AUTH and PWD for AP */
-#define APP_CFG_MAIN_WLAN_SSID "Sathvika"
+#define APP_CFG_MAIN_WLAN_SSID "Naruto"
 #define APP_CFG_MAIN_WLAN_AUTH M2M_WIFI_SEC_WPA_PSK
 #define APP_CFG_MAIN_WLAN_PSK  "2ri4-yowp-ied7"
 
@@ -308,6 +312,10 @@ void APP_Initialize(void)
 #endif
 
     userdata_status.as_uint8 = 0;
+    
+    
+     heartrate9_example_initialize();
+    
 }
 
 static void APP_ConnectNotifyCb(DRV_HANDLE handle,  WDRV_WINC_ASSOC_HANDLE assocHandle, WDRV_WINC_CONN_STATE currentState, WDRV_WINC_CONN_ERROR errorCode)
@@ -374,6 +382,7 @@ static void APP_DHCPAddressEventCb(DRV_HANDLE handle, uint32_t ipAddress)
             (0x0FF & (ipAddress >> 24)));
 
     debug_printGood("  APP: DHCP IP Address %s", deviceIpAddress);
+    transfer_ecc_certs_to_winc();
 
     shared_networking_params.haveIpAddress = 1;
     shared_networking_params.haveERROR     = 0;
@@ -530,23 +539,34 @@ void APP_Tasks(void)
                 App_CloudTaskTmrExpired = false;
                 CLOUD_task();
             }
-
             if (App_DataTaskTmrExpired == true)
             {
                 App_DataTaskTmrExpired = false;
                 APP_DataTask();
-            }
-
-            if (App_WifiScanPending)
-            {
-                APP_WifiScanTask(wdrvHandle);
-            }
-
+             }
+            CLOUD_sched();
+            wifi_sched();
+            MQTT_sched();
+            appData.state = APP_STATE_WDRV_ACTIV_2;
+            break;
+        }
+         case APP_STATE_WDRV_ACTIV_1:
+         {
+            
             CLOUD_sched();
             wifi_sched();
             MQTT_sched();
             break;
-        }
+         }
+          case APP_STATE_WDRV_ACTIV_2:
+         {
+            if (App_WifiScanPending)
+            {
+                APP_WifiScanTask(wdrvHandle);
+            }
+            appData.state = APP_STATE_WDRV_ACTIV;
+            break;
+         }
         default:
         {
             /* TODO: Handle error in application's state machine. */
@@ -569,11 +589,13 @@ static void APP_DataTask(void)
         // How many seconds since the last time this loop ran?
         int32_t delta = difftime(timeNow, previousTransmissionTime);
 
-        if (delta >= telemetryInterval)
+        
+
+       if (delta >= telemetryInterval)
         {
             previousTransmissionTime = timeNow;
             
-            if(led_status == LED_BLINK_STATUS && delta >=1000)
+            if(led_status == LED_BLINK_STATUS && delta >=1)
             {
                 STATUS_LED_Toggle();
             }
@@ -582,7 +604,7 @@ static void APP_DataTask(void)
             APP_SendToCloud();
         }
         
-        else if(led_status == LED_BLINK_STATUS && delta >=1000)
+        else if(led_status == LED_BLINK_STATUS && delta >=1)
         {
             previousTransmissionTime = timeNow;
             STATUS_LED_Toggle();
@@ -598,7 +620,7 @@ static void APP_DataTask(void)
             strcpy(twin_properties.ip_address, deviceIpAddress);
             twin_properties.flag.ip_address_updated = 1;
 
-            if (az_result_succeeded(send_reported_property_twin(&twin_properties)))
+            if (az_result_succeeded(send_reported_property(&twin_properties)))
             {
                 shared_networking_params.reported = 1;
             }
@@ -713,7 +735,7 @@ void APP_ReceivedFromCloud_patch(uint8_t* topic, uint8_t* payload)
     {
         if (twin_properties.flag.led_found == 1)
         {
-            debug_printInfo("  APP: Found led_status Value");
+            debug_printInfo("  APP: Twin 1 Found led_status Value");
         }
 
         if (twin_properties.flag.telemetry_interval_found == 1)
@@ -770,7 +792,7 @@ void APP_ReceivedFromCloud_twin(uint8_t* topic, uint8_t* payload)
 
         if (twin_properties.flag.led_found == 1)
         {
-            debug_printInfo("  APP: Found led_status Value");
+            debug_printInfo("  APP: Found led_status Value ");
         }
 
         if (twin_properties.flag.telemetry_interval_found == 1)
@@ -788,7 +810,7 @@ void APP_ReceivedFromCloud_twin(uint8_t* topic, uint8_t* payload)
             debug_printInfo("  APP: Found Patient Name Found Value '%s'", twin_properties.desired_patientName);
         }
         
-        rc = send_reported_property_twin(&twin_properties);
+        rc = send_reported_property(&twin_properties);
 
         if (az_result_failed(rc))
         {
@@ -929,23 +951,62 @@ static void APP_WifiScanTask(DRV_HANDLE handle)
     }
 }
 
+static void WriteCert(int type, const char *pem_cert,size_t pem_cert_size)
+{
+    uint8_t root_cert[1024];
+    size_t root_cert_size;
+    int atca_status = ATCACERT_E_SUCCESS;
+    //use enum instead of int
+    if(type == 0)
+    {
+       debug_printGood("TNG Device Cert : \r\n\r\n");
+        SYS_CONSOLE_Write(0, pem_cert, pem_cert_size); 
+    }
+    else if (type == 1)
+    {
+        debug_printGood("TNG Signer Cert : \r\n\r\n");
+        SYS_CONSOLE_Write(0, pem_cert, pem_cert_size);  
+    }
+    else
+    {
+        debug_printGood("TNG Root Cert : \r\n\r\n");
+        #define PEM_HEADER "-----BEGIN CERTIFICATE-----\n\r"
+        #define PEM_FOOTER "\n\r-----END CERTIFICATE-----\n\r"
+
+         if(ATCACERT_E_SUCCESS != (atca_status = tng_atcacert_max_device_cert_size(&root_cert_size)))
+        {
+            return ;
+        }
+     
+   
+        if(ATCACERT_E_SUCCESS != (atca_status = tng_atcacert_root_cert(root_cert, &root_cert_size)))
+        {
+            return ;
+        }
+        //atcacert_encode_pem_cert(root_cert, root_cert_size, pem_cert, &pem_cert_size);
+        atcab_base64encode(root_cert, root_cert_size, pem_cert, &pem_cert_size);
+
+        SYS_CONSOLE_Write(0, PEM_HEADER, strlen(PEM_HEADER));
+        SYS_CONSOLE_Write(0, pem_cert, pem_cert_size);
+        SYS_CONSOLE_Write(0, PEM_FOOTER, strlen(PEM_FOOTER)-1);
+         
+    }
+    
+}
+
 int8_t ecc_transfer_certificates()
 {
-#define MAX_TLS_CERT_LENGTH         1024
-#define SIGNER_PUBLIC_KEY_MAX_LEN   64
-#define SIGNER_CERT_MAX_LEN         600 //Set Maximum of existing certs
-#define DEVICE_CERT_MAX_LEN         600
-#define CERT_SN_MAX_LEN             32
-#define TLS_SRV_ECDSA_CHAIN_FILE    "ECDSA.lst"
-#define INIT_CERT_BUFFER_LEN        (MAX_TLS_CERT_LENGTH*sizeof(uint32_t) - TLS_FILE_NAME_MAX*2 - SIGNER_CERT_MAX_LEN - DEVICE_CERT_MAX_LEN)
-//#define CLOUD_CONNECT_WITH_CUSTOM_CERTS
-#define CLOUD_CONNECT_WITH_CUSTOM_CERTS    
+
+
+    //#define CLOUD_CONNECT_WITH_CUSTOM_CERTS    
     int8_t status = M2M_SUCCESS;
     int atca_status = ATCACERT_E_SUCCESS;
     uint8_t *signer_cert = NULL;
     size_t signer_cert_size;
-#ifdef CLOUD_CONNECT_WITH_CUSTOM_CERTS
-    uint8_t signer_public_key[SIGNER_PUBLIC_KEY_MAX_LEN];
+    static bool btransferDone=false;
+
+#ifndef CLOUD_CONNECT_WITH_CUSTOM_CERTS
+    uint8_t public_key[SIGNER_PUBLIC_KEY_MAX_LEN];
 #endif
     uint8_t *device_cert = NULL;
     size_t device_cert_size;
@@ -961,6 +1022,9 @@ int8_t ecc_transfer_certificates()
 
     do
     {
+        if(btransferDone == true)
+           return status;
+     
         // Clear cert chain buffer
         memset(sector_buffer, 0xFF, sizeof(sector_buffer));
 
@@ -974,45 +1038,45 @@ int8_t ecc_transfer_certificates()
         device_cert_filename = (char*)&file_list[0];
         signer_cert_filename = (char*)&file_list[TLS_FILE_NAME_MAX];
 
-    #ifdef CLOUD_CONNECT_WITH_CUSTOM_CERTS
+    #ifndef CLOUD_CONNECT_WITH_CUSTOM_CERTS
         // Uncompress the signer certificate from the ATECCx08A device
+        
+        tng_atcacert_root_public_key(public_key);
         signer_cert_size = SIGNER_CERT_MAX_LEN;
-        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_read_cert(&g_cert_def_1_signer, g_cert_ca_public_key_1_signer,
+        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_read_cert(&g_tngtls_cert_def_1_signer, public_key,
                                         signer_cert, &signer_cert_size)))
         {
             break;
         }
         pem_cert_size = sizeof(pem_cert);
         atcacert_encode_pem_cert(signer_cert, signer_cert_size, pem_cert, &pem_cert_size);
-        debug_printGood("Signer Cert : \r\n%s\r\n", pem_cert);
+        WriteCert(1,pem_cert,pem_cert_size);
+        //debug_printGood("Signer Cert : \r\n%s\r\n", pem_cert);
 
         // Get the signer's public key from its certificate
-        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_get_subj_public_key(&g_cert_def_1_signer, signer_cert,
-                                        signer_cert_size, signer_public_key)))
-        {
-            break;
-        }
+        tng_atcacert_signer_public_key(public_key,NULL);
 
         // Uncompress the device certificate from the ATECCx08A device.
         device_cert_size = DEVICE_CERT_MAX_LEN;
-        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_read_cert(&g_cert_def_3_device, signer_public_key,
+        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_read_cert(&g_tngtls_cert_def_3_device,public_key,
                                         device_cert, &device_cert_size)))
         {
             break;
         }
         pem_cert_size = sizeof(pem_cert);
         atcacert_encode_pem_cert(device_cert, device_cert_size, pem_cert, &pem_cert_size);
-        debug_printGood("Device Cert : \r\n%s\r\n", pem_cert);
+        //debug_printGood("Device Cert : \r\n%s\r\n", pem_cert);
+        WriteCert(0,pem_cert,pem_cert_size);
 
-        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_get_subj_key_id(&g_cert_def_3_device, device_cert,
+        if(ATCACERT_E_SUCCESS != (atca_status = atcacert_get_subj_key_id(&g_tngtls_cert_def_3_device, device_cert,
                                         device_cert_size, subject_key_id)))
         {
             // Break the do/while loop
             break;
         }
 
-        signer_cert_def = &g_cert_def_1_signer;
-        device_cert_def = &g_cert_def_3_device;
+        signer_cert_def = &g_tngtls_cert_def_1_signer;
+        device_cert_def = &g_tngtls_cert_def_3_device;
     #else
         // Uncompress the signer certificate from the ATECCx08A device
         if(ATCACERT_E_SUCCESS != (atca_status = tng_atcacert_max_signer_cert_size(&signer_cert_size)))
@@ -1041,7 +1105,7 @@ int8_t ecc_transfer_certificates()
         atcacert_encode_pem_cert(device_cert, device_cert_size, pem_cert, &pem_cert_size);
         debug_printGood("Device Cert : \r\n%s\r\n", pem_cert);
 
-        signer_cert_def = &g_tngtls_cert_def_1_signer;
+        
         if(ATCA_SUCCESS != (atca_status = tng_get_device_cert_def(&device_cert_def)))
         {
             break;
@@ -1124,6 +1188,7 @@ int8_t ecc_transfer_certificates()
         status =  M2M_ERR_FAIL;
     }
     
+    btransferDone = true;
 
     return status;
 }

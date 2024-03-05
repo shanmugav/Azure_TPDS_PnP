@@ -155,8 +155,9 @@ int8_t ecdh_derive_client_shared_secret(tstrECPoint *server_public_key,
     {
         g_ecdh_key_slot_index = 0;
     }
+   
 
-    if (_gDevice->mIface.mIfaceCFG->devtype == ATECC608A)
+    if ( atcab_get_device_type() == ATECC608A)
     {
         //do special ecdh functions for the 608, keep ephemeral keys in SRAM
         ecdh_mode = ECDH_MODE_SOURCE_TEMPKEY | ECDH_MODE_COPY_OUTPUT_BUFFER;
@@ -217,6 +218,8 @@ int8_t ecdsa_process_sign_verify_request(uint32_t number_of_signatures)
     uint8_t     hash[80]   = {0};
     uint16_t    curve_type = 0;
 
+    debug_printInfo("ecdsa_process_sign_verify_request %d", number_of_signatures);
+    
     for (index = 0; index < number_of_signatures; index++)
     {
         status = m2m_ssl_retrieve_cert(&curve_type, hash, signature, &Key);
@@ -304,7 +307,7 @@ void CRYPTO_CLIENT_processEccRequest(tstrEccReqInfo* ecc_request)
     uint8_t*       response_data_buffer = NULL;
 
     ecc_response.u16Status = 1;
-
+ debug_printInfo("CRYPTO_CLIENT_processEccRequest");
     switch (ecc_request->u16REQ)
     {
         case ECC_REQ_CLIENT_ECDH:

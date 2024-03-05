@@ -161,7 +161,7 @@ bool is_heartrate9_byte_ready(void)
     }
     if (false == hr9_rx_data_buf_clr_state)
     {
-        CLICK_HEARTRATE9_DelayMs(5000);
+        
         memset((char*)rx_buff, 0x00, RECEIVE_BUFFER_SIZE);
         hr9_rx_data_buf_clr_state  = true;
         rx_buff_in_index     = 0;

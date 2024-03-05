@@ -63,7 +63,7 @@ extern az_iot_hub_client iothub_client;
 #endif
 
 extern az_span           device_id_span;
-extern char              mqtt_username_buffer[203 + 1];
+extern char              mqtt_username_buffer[MQTT_USERNAME_BYTES];
 
 static char mqtt_get_twin_topic_buffer[64];
 
@@ -156,7 +156,7 @@ void MQTT_CLIENT_iothub_connect(char* device_id)
     const az_span hub_hostname_span    = az_span_create_from_str(hub_hostname);
     device_id_span                     = AZ_SPAN_FROM_BUFFER(device_id_buffer);
 
-    debug_printInfo("  HUB: Sending MQTT CONNECT to '%s'", hub_hostname);
+    debug_printInfo("  HUB: Sending IOT MQTT CONNECT to '%s'", hub_hostname);
 
     const az_span device_id_span_local = az_span_create_from_str(device_id);
 
